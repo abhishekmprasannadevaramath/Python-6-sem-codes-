@@ -1,0 +1,445 @@
+# Expt 1: To solve the Tic-Tac-Toe problem using the Depth First Search Technique
+
+w = [(0,1,2), (3,4,5), (6,7,8),
+     (0,3,6), (1,4,7), (2,5,8),
+     (0,4,8), (2,4,6)]
+
+def show(b):
+    for i in range(0,9,3):
+        print(b[i], "|", b[i+1], "|", b[i+2])
+    print()
+
+def win(b, p):
+    return any(b[x] == b[y] == b[z] == p for x,y,z in w)
+
+def mm(b, m):
+    if win(b, 'X'):
+        return 1
+    if win(b, 'O'):
+        return -1
+
+    e = [i for i in range(9) if b[i] == ' ']
+
+    if not e:
+        return 0
+
+    s = []
+
+    for i in e:
+        b[i] = 'X' if m else 'O'
+        s.append(mm(b, not m))
+        b[i] = ' '
+
+    return max(s) if m else min(s)
+
+def best(b):
+    move, val = -1, -2
+
+    for i in range(9):
+        if b[i] == ' ':
+            b[i] = 'X'
+            v = mm(b, False)
+            b[i] = ' '
+
+            if v > val:
+                val, move = v, i
+
+    return move
+
+b = [' '] * 9
+
+while True:
+
+    show(b)
+
+    p = int(input("Enter position (0-8): "))
+
+    if b[p] != ' ':
+        print("Invalid Move")
+        continue
+
+    b[p] = 'O'
+
+    if win(b, 'O'):
+        show(b)
+        print("You Win!")
+        break
+
+    if ' ' not in b:
+        show(b)
+        print("Draw!")
+        break
+
+    c = best(b)
+    b[c] = 'X'
+
+    print("Computer choose:", c)
+
+    if win(b, 'X'):
+        show(b)
+        print("Computer Wins!")
+        break
+
+    if ' ' not in b:
+        show(b)
+        print("Draw!")
+        break
+
+
+
+
+
+Expt :1
+
+board = ["x","x","x","o","o","","","",""]
+
+wins = [
+    (0,1,2),(3,4,5),(6,7,8),
+    (0,3,6),(1,4,7),(2,5,8),
+    (0,4,8),(2,4,6)
+]
+
+def check_winner(board):
+    for a, b, c in wins:
+        if board[a] == board[b] == board[c] and board[a] != "":
+            return board[a]
+
+    if "" not in board:
+        return "draw"
+
+    return None
+
+result = check_winner(board)
+
+if result == "x":
+    print("X wins")
+elif result == "o":
+    print("O wins")
+elif result == "draw":
+    print("Match draw")
+else:
+    print("Game still running")
+
+
+Expt: 2
+
+def inv(s):
+    s=[x for x in s if x!=0]
+    c=0
+    for i in range(len(s)):
+        for j in range(i+1,len(s)):
+            if s[i]>s[j]:
+               c+=1
+    return c
+s1=list(map(int,input("state1:").split()))
+s2=list(map(int,input("state2:").split()))
+i1,i2=inv(s1),inv(s2)
+print("state1 inversion:",i1)
+print("state2 inversion:",i2)
+if i1%2==i2%2:
+   print("both states are in the same set")
+   print(" and are reachable from each other. ")
+else:
+    print("both states are in the different set")
+    print(" both are not reachable. ")
+
+
+Expt:3
+
+people = {
+    "ravi": 21,
+    "anu": 18,
+    "kiran": 23,
+    "meena": 15
+}
+
+def can_vote(age):
+    return age >= 18
+
+print("===== KNOWLEDGE BASE =====")
+
+for person in people:
+    print(person, "age =", people[person])
+
+print("===== PREDICATE LOGIC RESULT =====")
+
+for person in people:
+    age = people[person]
+
+    if can_vote(age):
+        print(person, "can_vote")
+    else:
+        print(person, "cannot_vote")
+
+print("===== KNOWLEDGE RULE =====")
+print("Rule:")
+print("If age >= 18, then eligible_to_vote(person)")
+
+
+
+
+Expt:4
+
+d = [
+    ['youth','high','no','fair','no'],
+    ['youth','high','no','excellent','no'],
+    ['senior','high','yes','fair','yes'],
+    ['senior','high','yes','fair','yes']
+]
+
+def find_s(d):
+    h = ['0'] * 4
+    print("Initial Hypothesis:", h)
+
+    for x in d:
+        if x[-1] == "yes":
+            for i in range(4):
+                if h[i] == '0':
+                    h[i] = x[i]
+                elif h[i] != x[i]:
+                    h[i] = '?'
+    return h
+
+def ce(d):
+    s = ['0'] * 4
+    g = [['?', '?', '?', '?']]
+
+    print("\nInitial Specific Hypothesis:", s)
+    print("Initial General Hypothesis:", g)
+
+    for x in d:
+        if x[-1] == "yes":
+            for i in range(4):
+                if s[i] == '0':
+                    s[i] = x[i]
+                elif s[i] != x[i]:
+                    s[i] = '?'
+
+    return s, g
+
+print("===== FIND-S ALGORITHM =====")
+h = find_s(d)
+print("\nFinal Hypothesis from Find-S:")
+print(h)
+
+print("\n===== CANDIDATE ELIMINATION ALGORITHM =====")
+s, g = ce(d)
+
+print("\nFinal Specific Hypothesis:")
+print(s)
+
+print("\nFinal General Hypothesis:")
+for i in g:
+    print(i)
+
+
+
+Expt:5
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, export_text
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+data = {
+'Outlook': ['Sunny', 'Sunny', 'Overcast', 'Rain', 'Rain', 'Rain', 
+'Overcast', 'Sunny', 'Sunny', 'Rain'],
+'Temperature': ['Hot', 'Hot', 'Hot', 'Mild', 'Cool', 'Cool', 'Cool', 
+'Mild', 'Mild', 'Mild'],
+'Humidity': ['High', 'High', 'High', 'High', 'Normal', 'Normal', 
+'Normal', 'High', 'Normal', 'Normal'],
+'Windy': ['False', 'True', 'False', 'False', 'False', 'True', 'True', 
+'False', 'False', 'True'],
+'PlayTennis': ['No', 'No', 'Yes', 'Yes', 'Yes', 'No', 'Yes', 'No', 
+'Yes', 'Yes']
+}
+df = pd.DataFrame(data)
+X = pd.get_dummies(df.drop('PlayTennis', axis=1)) # Convert categorical to 
+numeric
+y = df['PlayTennis']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, 
+random_state=42)
+clf = DecisionTreeClassifier(criterion='entropy', random_state=42)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}\n")
+tree_rules = export_text(clf, feature_names=list(X.columns))
+print(tree_rules)
+
+
+
+
+Expt :6
+
+import math
+
+d = [
+    ['Rainy', 'Hot', 'Yes'],
+    ['Sunny', 'Hot', 'No'],
+    ['Sunny', 'Cool', 'No'],
+    ['Rainy', 'Cool', 'Yes']
+]
+
+def e(data):
+    y = [x[-1] for x in data]
+    return sum(
+        -(y.count(i) / len(y)) * math.log2(y.count(i) / len(y))
+        for i in set(y)
+    )
+
+def id3(data, features, max_depth=99, depth=0):
+    y = [x[-1] for x in data]
+
+    if len(set(y)) == 1 or depth == max_depth:
+        return max(set(y), key=y.count)
+
+    best = max(
+        features,
+        key=lambda a: e(data) - sum(
+            len(s) / len(data) * e(s)
+            for v in set(x[a] for x in data)
+            for s in [[x for x in data if x[a] == v]]
+        )
+    )
+
+    return {
+        best: {
+            v: id3(
+                [x for x in data if x[best] == v],
+                [x for x in features if x != best],
+                max_depth,
+                depth + 1
+            )
+            for v in set(x[best] for x in data)
+        }
+    }
+
+print("UNDERFITTING")
+print(id3(d, [0, 1], 1))
+
+print("\nBALANCED")
+print(id3(d, [0, 1], 2))
+
+print("\nOVERFITTING")
+print(id3(d, [0, 1]))
+
+
+Expt:7 
+
+x=[1,2,3,8,9,10]
+ print("supervised learning")
+for i in [2,9]:
+    print("prediction for",i,":",0 if i<5 else 1)
+    print("\nunsupervised learning")
+for i in x:
+    print(i,"->","cluster A" if i<5 else "cluster B")
+    print("\nsemisupervised learning")
+for i in [2,3,8,10]:
+    print("value:",i,"predicted:",0 if i<5 else 1)
+    print("\nReinforecement learning")
+score=0
+for a in ["correct","wrong","correct"]:
+    if a=="correct":
+        score +=10
+        print("reward +10")
+        score -=5
+        print("penalty -5")
+        print("final score :",score)
+
+
+Expt :8
+
+d=[['high','complete','yes'],
+['high','incomplete','yes'],
+['low','complete','no'],
+['high','complete','yes']]
+print("find-s algorithm ")
+h=['0','0']
+for x in d:
+    if x[-1]=='yes':
+        for i in range(2):
+            if h[i]=='0':
+                h[i]=x[i]
+            elif h[i]!=x[i]:
+                 h[i]='?'
+                 print("final hypothesis:\n",h)
+                 print("\ncandidate elimination ")
+                 s=['0','0']
+                 g=['?','?']
+for x in d:
+    if  x[-1]=='yes':
+        for i in range(2):
+            if s[i]=='0':
+                s[i]=x[i]
+            elif s[i]!=x[i]:
+                 s[i]='?'
+    else:
+        for i in range(2):
+            x[i]!=s[i]
+            g[i]=s[i]
+print("specific boundary:s",s)
+print("general boundary:g",g)
+print("\n inductive bias")
+print("find-s learns the most specific concept")
+print("\ncandidate elimination keeps both ")
+print("specific and general boundary ")
+
+Expt:9
+
+ import numpy as np
+
+x = np.array([
+    [8.3,52.1,9],[8.3,42.1,2],
+    [6.3,52.1,2],[6.8,52.1,4],
+    [6.8,42.1,9],[7.3,52.8,7],
+    [8.3,52.4,2],[8.3,52.4,7],
+    [8.3,52.2,9],[8.3,52.4,2]
+])
+
+y = np.array([4.5,3.5,3.5,3.4,3.4,2.6,2.9,2.4,2.2,2.6])
+
+tx, vx = x[:8], x[8:]
+ty, vy = y[:8], y[8:]
+
+m, s = tx.mean(0), tx.std(0)
+
+tx = (tx - m) / s
+vx = (vx - m) / s
+
+tx = np.c_[np.ones(len(tx)), tx]
+vx = np.c_[np.ones(len(vx)), vx]
+
+theta = np.linalg.inv(tx.T @ tx) @ tx.T @ ty
+
+pred = vx @ theta
+
+mse = np.mean((vy - pred) ** 2)
+
+print("Predictions\n")
+
+for i in range(len(pred)):
+    print("Actual:", vy[i])
+    print("Prediction:", round(pred[i], 2))
+    print()
+
+print("MSE =", round(mse, 2))
+print("RMSE =", round(np.sqrt(mse), 2))
+
+
+
+
+Expt :10
+
+import numpy as np
+X=np.array([
+[1,1,1,1, 1,0,0,1, 1,0,1,1, 1,1,1,1],
+[1,1,0,1, 1,1,0,0, 1,0,0,1, 1,1,1,1],
+[1,1,1,1, 1,0,1,0, 1,1,1,1, 1,0,0,0],
+[1,1,1,1, 1,0,1,1, 1,1,1,0, 0,0,1,1],
+[1,0,1,0, 1,0,1,1, 1,1,1,0, 0,1,1,0]])
+y= np.array([0,1,2,3,4])
+print("MNIST DATASET\n")
+for i in range(len(X)):
+    print("Digit :",y[i])
+    print(X[i].reshape(4,4))
+    print()
