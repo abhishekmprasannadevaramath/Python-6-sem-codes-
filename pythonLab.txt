@@ -1,0 +1,461 @@
+########### 1st ###################################################################
+##1st
+b = [" "] * 9
+
+def s():
+    for i in range(0, 9, 3):
+        print(b[i], "|", b[i+1], "|", b[i+2])
+    print()
+
+def win(p):
+    if b[0] == b[1] == b[2] == p:
+        return True
+    if b[3] == b[4] == b[5] == p:
+        return True
+    if b[6] == b[7] == b[8] == p:
+        return True
+    if b[0] == b[3] == b[6] == p:
+        return True
+    if b[1] == b[4] == b[7] == p:
+        return True
+    if b[2] == b[5] == b[8] == p:
+        return True
+    if b[0] == b[4] == b[8] == p:
+        return True
+    if b[2] == b[4] == b[6] == p:
+        return True
+    return False
+
+while " " in b:
+    s()
+
+    p = int(input("Enter position (1-9): ")) - 1
+
+    if b[p] != " ":
+        continue
+
+    b[p] = "X"
+
+    if win("X"):
+        s()
+        print("You Win")
+        break
+
+    moved = False
+    for i in range(9):
+        if b[i] == " ":
+            b[i] = "O"
+            print("AI played at", i + 1)
+            moved = True
+            break
+
+    if moved and win("O"):
+        s()
+        print("AI Wins")
+        break
+
+else:
+    s()
+    print("Match Draw")
+    
+#############  2 ################################################################################
+def count_inversions(state):
+    tiles = [x for x in state if x != 0]
+    inversions = 0
+
+    for i in range(len(tiles)):
+        for j in range(i + 1, len(tiles)):
+            if tiles[i] > tiles[j]:
+                inversions += 1
+
+    return inversions
+
+
+state1 = list(map(int, input("Enter State 1 (e.g. 1 2 3 4 5 6 7 8 0): ").split()))
+state2 = list(map(int, input("Enter State 2 (e.g. 1 2 3 4 5 6 8 7 0): ").split()))
+
+inv1 = count_inversions(state1)
+inv2 = count_inversions(state2)
+
+print("State 1 Inversions:", inv1)
+print("State 2 Inversions:", inv2)
+
+if inv1 % 2 == inv2 % 2:
+    print("\nResult: TRUE - Both states are in the SAME set and are reachable.")
+else:
+    print("\nResult: FALSE - The states are in DIFFERENT sets and are NOT reachable.")
+
+############### 3 ############################################################################################
+##3rd
+students = {
+    "Alice": {"attendance": 80, "marks": 50},
+    "Bob":   {"attendance": 70, "marks": 60},
+    "Kiran": {"attendance": 90, "marks": 40}
+}
+def good_attendance(att): return att >= 75
+def good_marks(marks): return marks >= 45
+def is_eligible(att, marks):
+    return good_attendance(att) and good_marks(marks)
+print("========== KNOWLEDGE BASE ==========")
+for student, data in students.items():
+    print(f"{student}: {data}")
+print("\n========== PREDICATE LOGIC RESULT ==========")
+for student, data in students.items():
+    if is_eligible(data["attendance"], data["marks"]):
+        print(f"{student} CAN write the exam.")
+    else:
+        print(f"{student} CANNOT write the exam.")
+print("\n========== KNOWLEDGE RULE ==========")
+print("IF (Attendance >= 75) AND (Marks >= 45) THEN Eligible(Student)")
+####################### 4 ###################################################################################
+##4th
+dataset = []
+
+n = int(input("Enter number of students: "))
+
+for i in range(n):
+    print(f"\nEnter details of student {i+1}")
+
+    name = input("Enter name: ")
+    marks = input("Enter marks (good/poor): ").capitalize()
+    attendance = input("Enter attendance (high/low): ").capitalize()
+
+    eligibility = "Yes" if marks == "Good" and attendance == "High" else "No"
+
+    dataset.append([attendance, marks, eligibility, name])
+
+X = [d[:2] for d in dataset]
+Y = [d[2] for d in dataset]
+
+# Find-S
+pos = [x for x, y in zip(X, Y) if y == "Yes"]
+
+if pos:
+    S = pos[0][:]
+    for x in pos[1:]:
+        S = [S[i] if S[i] == x[i] else '?' for i in range(len(S))]
+else:
+    S = ['?'] * 2
+
+# Candidate Elimination
+G = [['?'] * 2]
+
+for x, y in zip(X, Y):
+    if y == "No":
+        G = []
+        for i in range(len(S)):
+            if S[i] != '?' and x[i] == S[i]:
+                h = ['?'] * 2
+                h[i] = S[i]
+                G.append(h)
+
+# Output
+for d in dataset:
+    print("\nName:", d[3])
+    print("Internal Marks:", d[1].lower())
+    print("Attendance:", d[0].lower())
+    print("Status:", "Selected" if d[2] == "Yes" else "Eliminated")
+
+print("\nFind-S Hypothesis:", S)
+print("\nCandidate Elimination Hypothesis")
+print("Final Specific Hypothesis (S):", S)
+print("Final General Hypothesis (G):", G)
+
+################ 5 ########################################################################################
+##5th
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, export_text
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+data = {
+    'Outlook': ['Sunny', 'Sunny', 'Overcast', 'Rain', 'Rain', 'Rain', 
+                'Overcast', 'Sunny', 'Sunny', 'Rain'],
+    'Temperature': ['Hot', 'Hot', 'Hot', 'Mild', 'Cool', 'Cool', 
+                    'Cool', 'Mild', 'Mild', 'Mild'],
+    'Humidity': ['High', 'High', 'High', 'High', 'Normal', 'Normal', 
+                 'Normal', 'High', 'Normal', 'Normal'],
+    'Windy': ['False', 'True', 'False', 'False', 'False', 'True', 
+              'True', 'False', 'False', 'True'],
+    'PlayTennis': ['No', 'No', 'Yes', 'Yes', 'Yes', 'No', 
+                   'Yes', 'No', 'Yes', 'Yes']
+}
+
+df = pd.DataFrame(data)
+X = pd.get_dummies(df.drop('PlayTennis', axis=1))
+y = df['PlayTennis']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+clf = DecisionTreeClassifier(criterion='entropy', random_state=42)
+clf.fit(X_train, y_train)
+
+y_pred = clf.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}\n")
+
+tree_rules = export_text(clf, feature_names=list(X.columns))#######
+print(tree_rules)
+
+print("\n=== Play Tennis Prediction ===")
+outlook = input("Outlook (Sunny/Overcast/Rain): ").capitalize()
+temperature = input("Temperature (Hot/Mild/Cool): ").capitalize()
+humidity = input("Humidity (High/Normal): ").capitalize()
+windy = input("Windy (True/False): ").capitalize()
+
+new_data = pd.DataFrame({
+    'Outlook': [outlook],
+    'Temperature': [temperature],
+    'Humidity': [humidity],
+    'Windy': [windy]
+})
+
+new_data = pd.get_dummies(new_data)
+new_data = new_data.reindex(columns=X.columns, fill_value=0)####
+
+prediction = clf.predict(new_data)
+
+print("\nPrediction:", prediction[0])
+
+################### 6 ############################################################################################
+#6thhhh
+# ID3 Decision Tree: Compare depth & overfitting
+from sklearn.datasets import load_iris, load_wine
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+# Load datasets
+datasets = [("Iris", load_iris()), ("Wine", load_wine())]
+
+print("========== ID3 ALGORITHM PERFORMANCE ==========")
+
+for name, data in datasets:
+    print(f"\n===== DATASET: {name.upper()} =====")
+
+    # Split into training (70%) and testing (30%)
+    X_train, X_test, y_train, y_test = train_test_split(
+        data.data, data.target, test_size=0.3, random_state=42
+    )
+
+    # Try different tree depths
+    for depth in [1, 2, 3, 4]:
+        m = DecisionTreeClassifier(criterion="entropy", max_depth=depth, random_state=42)
+        m.fit(X_train, y_train)
+
+        # Accuracy
+        train = m.score(X_train, y_train)
+        test = m.score(X_test, y_test)
+
+        # Print results
+        print("Depth:", depth)
+        print("Train Accuracy:", round(train, 2))
+        print("Test Accuracy:", round(test, 2))
+
+
+        # Observations
+        if depth == 1:
+            print("Observation: Underfitting (tree too simple)")
+        elif train > test + 0.05:
+            print("Observation: Overfitting (too complex)")
+        else:
+            print("Observation: Good balance")
+##################### 7 ####################################################################################
+X = [1, 2, 3, 2,9,10]
+y = [0, 0, 0, 1, 1, 1]
+
+
+print("\nSUPERVISED LEARNING")
+
+
+def supervised_predict(value):
+    if value < 5:
+        return 0
+    else:
+        return 1
+
+print("Prediction for 2 :", supervised_predict(2))
+print("Prediction for 9 :", supervised_predict(9))
+
+
+
+print("\nUNSUPERVISED LEARNING")
+
+
+for value in X:
+    if value < 5:
+        cluster = "Cluster A"
+    else:
+        cluster = "Cluster B"
+         
+    print(value, "->", cluster)
+
+
+
+print("\nSEMI-SUPERVISED LEARNING")
+
+
+labeled_data = {1: 0, 9: 1}
+
+unlabeled = [2, 3, 8, 10]
+
+for value in unlabeled:
+    if value < 5:
+        predicted_label = 0
+    else:
+        predicted_label = 1
+        
+    print("Value :", value, "Predicted Label :", predicted_label)
+
+
+
+print("\nREINFORCEMENT LEARNING")
+
+score = 0
+
+actions = ["Correct", "Wrong", "Correct"]
+
+for action in actions:
+    if action == "Correct":
+        score += 10
+        print("Reward +10")
+    else:
+        score -= 5
+        print("Penalty -5")
+
+print("Final Score :", score)
+
+################### 8 ############################################################################################
+import pandas as pd
+
+d = [
+    ['Sunny', 'Warm', 'Normal', 'Yes'],
+    ['Sunny', 'Warm', 'High', 'Yes'],
+    ['Rainy', 'Cold', 'High', 'No'],
+    ['Sunny', 'Warm', 'High', 'Yes']
+]
+
+df = pd.DataFrame(d)
+
+X = [r[:-1] for r in df.values]
+Y = [r[-1] for r in df.values]
+
+pos = [x for x, y in zip(X, Y) if y == "Yes"]
+
+if pos:
+    S = pos[0][:]
+    for x in pos[1:]:
+        S = [S[i] if S[i] == x[i] else '?' for i in range(len(S))]
+else:
+    S = ['?'] * len(X[0])
+
+G = []
+
+for i in range(len(S)):
+    h = ['?'] * len(S)
+    if S[i] != '?':
+        h[i] = S[i]
+    G.append(h)
+
+print("Find-S Hypothesis:", S)
+print("Specific Boundary S:", S)
+print("General Boundary G:", G)
+
+################### 9 ####################################################################################
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+data = np.array([
+    [8.3252, 41.0, 6.9841, 1.0238, 322.0, 2.5555, 37.88, -122.23, 4.526],
+    [8.3014, 21.0, 6.2381, 0.9718, 2401.0, 2.1098, 37.86, -122.22, 3.585],
+    [7.2574, 52.0, 8.2881, 1.0734, 496.0, 2.8022, 37.85, -122.24, 3.521],
+    [5.6431, 52.0, 5.8173, 1.0730, 558.0, 2.5479, 37.85, -122.25, 3.413]
+])
+
+cols = [
+    "MedInc", "HouseAge", "AveRooms", "AveBedrms",
+    "Population", "AveOccup", "Latitude", "Longitude",
+    "MedHouseVal"
+]
+
+d = pd.DataFrame(data, columns=cols)
+
+print("Dataset Shape:", d.shape)
+print(d.head())
+
+d.hist(figsize=(10, 8))
+plt.show()
+
+X = d.iloc[:, :-1]
+y = d.iloc[:, -1]
+
+Xtr, Xte, ytr, yte = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+m = RandomForestRegressor(random_state=42)
+m.fit(Xtr, ytr)
+
+p = m.predict(Xte)
+
+print("\nRMSE:", round(np.sqrt(mean_squared_error(yte, p)), 3))
+print("R2 Score:", round(r2_score(yte, p), 3))
+
+imp = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": m.feature_importances_
+})
+
+print("\nFeature Importance:")
+print(imp)
+
+######################### 10 #######################################################################################
+import numpy as np
+import matplotlib.pyplot as plt 
+
+X = np.array([
+    [1,1,1,1,
+     1,0,0,1,
+     1,0,0,1,
+     1,1,1,1],
+    
+    [0,1,0,0,
+     1,1,0,0,
+     0,1,0,0,
+     1,1,1,0],
+    
+    [1,1,1,0,
+     0,0,1,0,
+     1,0,0,0,
+     1,1,1,1],
+    
+    [1,1,1,0,
+     0,0,1,0,
+     1,1,1,0,
+     0,0,1,0],
+    
+    [1,0,1,0,
+     1,0,1,0,
+     1,1,1,0,
+     0,0,1,0]
+])
+
+y = np.array([0,1,2,3,4])
+print("========== SIMPLE MNIST-LIKE DATASET ==========\n")
+for i in range(len(X)):
+    print("Digit Label :", y[i])
+    image = X[i].reshape(4,4)
+    print(image)
+    print()
+
+print("Dataset Shape :", X.shape)
+print("Number of Labels :", len(y))
+print("predicted pixel no image")
+grid = np.hstack([X[i].reshape(4, 4) for i in range(5)])
+plt.imshow(grid, cmap='gray_r')
+plt.axis('off')
+plt.show()
